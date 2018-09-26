@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">AfterYouSIAMI</string>
+    <string name="title_activity_perks_summary">perks_summary</string>
+    <string name="title_activity_chooseperks">Chooseperks</string>
+    <string-array name="perks_list">
+
+        <item>Access to KrisFlyer Lounge</item>
+        <item>Free Perfume</item>
+        <item>Free Cai Fan</item>
+        <item>Exchange for Free Flight to New York</item>
+        <item>Exchange to Japan</item>
+    </string-array>
+    <string name="title_activity_notification">Notification</string>
+    <string name="title_activity_homepage">Homepage</string>
+
+</resources>
