@@ -1,0 +1,43 @@
+{
+    "code": 200,
+    "status": "SUCCESS",
+    "response": {
+        "dateOfBirth": "1986-05-12",
+        "firstName": "Matthew",
+        "lastName": "Jones",
+        "title": "Mr",
+        "email": "matthew_jones@gmail.com",
+        "loyaltyTierCode": "EGTP",
+        "loyaltyTierName": "Elite Gold on Solitaire PPS",
+        "address": [
+            {
+                "line1": "525, Tampines",
+                "type": "Home"
+            }
+        ],
+        "contact": {
+            "phoneNumber": "3212781351",
+            "type": "Mobile"
+        },
+        "passengerExperienceHistory": [
+            {
+                "flightNumber": "SQ225",
+                "flightDate": "2017-04-18",
+                "category": "OffloadedFromFlight",
+                "incidentDetails": "Passenger Offloaded from the Flight due to over booking"
+            },
+            {
+                "flightNumber:": "SQ334",
+                "flightDate": "2018-05-24",
+                "category": "BaggageMishandled",
+                "incidentDetails": "Passenger Baggage is short-shipped at CDG station"
+            }
+        ],
+        "krisShopOrders": [
+            {
+                "orderNo:": "K7856018",
+                "orderDate": "2018-08-23"
+            }
+        ]
+    }
+}

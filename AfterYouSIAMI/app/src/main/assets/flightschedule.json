@@ -1,0 +1,184 @@
+{
+    "status": "SUCCESS",
+    "code": "200",
+    "response": {
+        "originAirportCode": "SIN",
+        "destinationAirportCode": "AKL",
+        "requestDepartureDate": "2018-09-29",
+        "requestReturnDate": null,
+        "departureFlights": {
+            "originAirportCode": "SIN",
+            "destinationAirportCode": "AKL",
+            "flights": [
+                {
+                    "departureDate": "2018-09-26",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-09-26T21:15:00",
+                                    "arrivalDateTime": "2018-09-27T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-09-27",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-09-27T21:15:00",
+                                    "arrivalDateTime": "2018-09-28T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-09-28",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-09-28T21:15:00",
+                                    "arrivalDateTime": "2018-09-29T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-09-29",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-09-29T21:15:00",
+                                    "arrivalDateTime": "2018-09-30T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-09-30",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-09-30T21:15:00",
+                                    "arrivalDateTime": "2018-10-01T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-10-01",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-10-01T21:15:00",
+                                    "arrivalDateTime": "2018-10-02T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                },
+                {
+                    "departureDate": "2018-10-02",
+                    "segments": [
+                        {
+                            "originAirportCode": "SIN",
+                            "destinationAirportCode": "AKL",
+                            "legs": [
+                                {
+                                    "legIndex": 0,
+                                    "departureDateTime": "2018-10-02T21:15:00",
+                                    "arrivalDateTime": "2018-10-03T10:50:00"
+                                }
+                            ],
+                            "tripDuration": 34500
+                        }
+                    ]
+                }
+            ],
+            "flightLegs": [
+                {
+                    "index": 0,
+                    "flightNumber": "285",
+                    "originAirportCode": "SIN",
+                    "originAirportTerminal": "3",
+                    "destinationAirportCode": "AKL",
+                    "destinationAirportTerminal": "I",
+                    "departureTime": "21:15",
+                    "arrivalTime": "10:50",
+                    "operatingAirlineCode": "SQ",
+                    "operatingAirlineName": "Singapore Airlines",
+                    "marketingAirlineCode": "SQ",
+                    "marketingAirlineName": "Singapore Airlines",
+                    "aircraft": {
+                        "aircraftTypeCode": "773",
+                        "displayName": "Boeing 777-300"
+                    },
+                    "layoverDuration": -1,
+                    "legDuration": 34500,
+                    "codeShareFlight": false
+                }
+            ]
+        },
+        "returnFlights": null,
+        "airports": [
+            {
+                "airportCode": "AKL",
+                "airportName": "Auckland Airport",
+                "timezone": "Oceania/Auckland",
+                "city": {
+                    "code": "AKL",
+                    "name": "Auckland",
+                    "localName": null,
+                    "officeId": null
+                }
+            },
+            {
+                "airportCode": "SIN",
+                "airportName": "Changi",
+                "timezone": "Asia/Singapore",
+                "city": {
+                    "code": "SIN",
+                    "name": "Singapore",
+                    "localName": null,
+                    "officeId": null
+                }
+            }
+        ],
+        "returnFlight": false
+    }
+}
