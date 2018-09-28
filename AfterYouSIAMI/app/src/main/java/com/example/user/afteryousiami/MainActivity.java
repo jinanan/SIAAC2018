@@ -11,6 +11,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //to be removed during submission
+        Intent i =  new Intent(MainActivity.this, Chooseperks.class );
+        startActivity(i);
     }
 
     public void nxtPageBtn(View v){

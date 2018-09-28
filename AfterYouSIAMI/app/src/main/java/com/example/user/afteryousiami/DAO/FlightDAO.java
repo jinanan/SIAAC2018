@@ -75,10 +75,11 @@ public class FlightDAO {
             for (int j = 0; j < segments.length(); j++) {
                 String dateInString = segments.getJSONObject(j).getJSONArray("legs").getJSONObject(0).getString("departureDateTime");
                 departureDate = formatter.parse(dateInString);
-
             }
 
-            list.add(new Flight(origin, dest, flightNo, departureDate));
+            if(departureDate.compareTo(date) > 0) {         //only add to the list if the date/time is after the date that is passed in
+                list.add(new Flight(origin, dest, flightNo, departureDate));
+            }
         }
 
 

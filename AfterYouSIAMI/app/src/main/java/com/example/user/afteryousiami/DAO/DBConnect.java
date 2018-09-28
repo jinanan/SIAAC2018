@@ -14,24 +14,30 @@ import java.util.List;
 public class DBConnect {
 
 
-    public boolean insertData() {
+    /***
+     * inserts into the database with the added perks
+     * @param perksList added perks list
+     * @return
+     */
+    public boolean insertBid(List<Perks> perksList, int bookingID) {
         Connection con = null;
         PreparedStatement pmt = null;
         try {
             con = ConnectionManager.getConnection();
             pmt = null;
             if (con != null) {
-                pmt = con.prepareStatement("insert into user (firstName, lastName, phone, email, krisflyerNum)" + " values (?, ?, ?, ?, ?)");
-                pmt.setString(1, "herp");
-                pmt.setString(2, "derp");
-                pmt.setInt(3, 98247512);
-                pmt.setString(4, "herpderp@gmail.com");
-                pmt.setInt(5, 124719285);
-                pmt.executeUpdate();
+                //loop thru the perksList
+                for (Perks p : perksList) {
+                    pmt = con.prepareStatement("insert into bid (bidCatId, bookingId, bidPrice)" + " values (?, ?, ?)");
+                    pmt.setInt(1, p.getPerksID());
+                    pmt.setInt(2, bookingID);
+                    pmt.setDouble(3, p.getTotalPrice());
+                    pmt.executeUpdate();
+                }
             }
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            printError(e);
         } finally {
             ConnectionManager.close(con, pmt, null);
         }
@@ -50,21 +56,23 @@ public class DBConnect {
         try {
             conn = ConnectionManager.getConnection();
             if (conn != null) {
-                pmt = conn.prepareStatement("SELECT bidCatType.name, bidCatType.sponsor, bidCat.catPricePerUnit, bidCat.catDescription FROM bidCatType INNER JOIN bidCat ON bidCatType.bidCatTypeId = bidCat.bidCatTypeId;");
+                pmt = conn.prepareStatement("SELECT bidCat.bidCatId, bidCatType.name, bidCatType.sponsor, bidCat.catPricePerUnit, bidCat.catDescription FROM bidCatType INNER JOIN bidCat ON bidCatType.bidCatTypeId = bidCat.bidCatTypeId;");
                 rs = pmt.executeQuery();
 
-                final int TYPE = 1;     //type of the product (e.g. singapore airlines/ travel services/ etc)
-                final int NAME = 2;     //name of the product
-                final int BIDCAT_CAT_PRICE_PER_UNIT = 3;
-                final int BIDCAT_DESCRIPTION = 4;
+                final int ID = 1;
+                final int TYPE = 2;     //type of the product (e.g. singapore airlines/ travel services/ etc)
+                final int NAME = 3;     //name of the product
+                final int BIDCAT_CAT_PRICE_PER_UNIT = 4;
+                final int BIDCAT_DESCRIPTION = 5;
 
                 while (rs.next()) {
+                    int id = rs.getInt(ID);
                     String type = rs.getString(TYPE);
                     String name = rs.getString(NAME);
                     String description = rs.getString(BIDCAT_DESCRIPTION);
                     double pricePerUnit = rs.getDouble(BIDCAT_CAT_PRICE_PER_UNIT);
 
-                    perksList.add(new Perks(name, type, description, pricePerUnit));
+                    perksList.add(new Perks(id, name, type, description, pricePerUnit));
                 }
             }
 
@@ -84,10 +92,5 @@ public class DBConnect {
 
     private static void printError(Exception e) {
         Log.e("DBConnect.java", "error", e);
-    }
-
-    public static void main(String[] args) {
-        DBConnect db = new DBConnect();
-        db.insertData();
     }
 }

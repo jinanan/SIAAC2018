@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper"
+    android:baselineAligned="false"
     android:orientation="vertical"
     tools:context=".perks_summary">
 
@@ -17,7 +18,8 @@
         android:text="Perks Summary"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="24sp" />
+        android:textSize="25sp"
+        android:paddingBottom="50sp"/>
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -35,62 +37,20 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                android:padding="5dp">
+                android:background="#FFFFFF">
 
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="1dp"
-                    android:text="Perks"
-                    android:textColor="#FCB130"
-                    android:textSize="25sp"
+                    android:text="Perks selected"
+                    android:textColor="#0C4082"
+                    android:textSize="23sp"
                     android:textStyle="bold" />
             </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/a"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Krisflyer Lounge"
-                    android:textColor="#FCB130"
-                    android:textSize="16sp" />
-
-
-                <TextView
-                    android:id="@+id/b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="price"
-                    android:textColor="#FCB130"
-                    android:textSize="16sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal">
-
-                <Button
-                    android:id="@+id/btn_confirm"
-                    android:layout_width="380dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:background="#0C4082"
-                    android:text="Confirm"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/white" />
-
-            </TableRow>
+            <!--other items will be added programatically-->
 
         </TableLayout>
     </ScrollView>

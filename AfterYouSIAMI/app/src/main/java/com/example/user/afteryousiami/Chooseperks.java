@@ -33,9 +33,12 @@ import android.widget.Toast;
 import com.example.user.afteryousiami.DAO.DBConnect;
 import com.example.user.afteryousiami.objects.Perks;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Chooseperks extends Activity {
     private final Context context = this;
@@ -44,6 +47,8 @@ public class Chooseperks extends Activity {
     private DBConnect db = new DBConnect();
     private List<Perks> perksList;
     private TableLayout layout;
+    private String[] quantityList;        //used to keep all of the names of the items that needs to have the quantity button
+    private DecimalFormat df = new DecimalFormat(".##");
 
     //colors to be used for the textview
     private final String WHITE_COLOR = "#ffffff";
@@ -61,6 +66,15 @@ public class Chooseperks extends Activity {
         spinner = (Spinner) findViewById(R.id.spinner);
         layout = (TableLayout) findViewById(R.id.tableLayout);
         new PerksAsyncTask().execute();
+
+
+        Properties prop = new Properties();              //access the properties file
+        try {
+            prop.load(getAssets().open("app.properties"));
+            quantityList = prop.getProperty("quantity_fields").split(",");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createSpinnerObjects(List<Perks> perksList) {
@@ -112,9 +126,10 @@ public class Chooseperks extends Activity {
             TableRow pictureRow = new TableRow(this);
             TableRow descriptionRow = new TableRow(this);
             TableRow addToCartRow = new TableRow(this);
+            TableRow quantityRow = new TableRow(this);
 
             //setting layout params
-            headerRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            headerRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
             headerRow.setPadding(0, 0, 0, 20);
             pictureRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             pictureRow.setPadding(0, 0, 0, 20);
@@ -126,25 +141,154 @@ public class Chooseperks extends Activity {
             }
 
             //add data from the textviews to the tablerows
-            headerRow.addView(createTextView(p.getName(), true));
+            TextView headerView = createTextView(p.getName(), true, false);
+            headerRow.addView(headerView);      //add header and the credits
+            TableRow.LayoutParams headerViewLP = (TableRow.LayoutParams) headerView.getLayoutParams();
+            headerViewLP.width = 0;
+            headerViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+            headerViewLP.weight = 0.6f;
+            headerView.setLayoutParams(headerViewLP);
+
+            TextView creditsView = createTextView(String.valueOf(p.getPricePerUnit()) + " Credits per unit", true, true);
+            headerRow.addView(creditsView);
+            TableRow.LayoutParams creditsViewLP = (TableRow.LayoutParams) creditsView.getLayoutParams();
+            creditsViewLP.width = 0;
+            creditsViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+            creditsViewLP.weight = 0.4f;
+            creditsView.setLayoutParams(creditsViewLP);
+            creditsView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
+
             createImageView(p.getName(), pictureRow);
-            descriptionRow.addView(createTextView(p.getDescription(), false));
-            addToCartRow.addView(createCartButton(p.getName(), p));
+            descriptionRow.addView(createTextView(p.getDescription(), false, false));
+            addToCartRow.addView(createCartButton(p.getName(), p, quantityRow));
+
+            //loop thru the quantity list and check if need to add quantity stuffs
+            boolean hasQuantity = false;
+            for (String s : quantityList) {
+                if (p.getName().equals(s)) {
+                    quantityRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+                    quantityRow.setPadding(0, 0, 0, 20);
+                    createQuantityFields(quantityRow, p, false);
+                    hasQuantity = true;
+                }
+            }
 
 
             //add to the layout
             layout.addView(headerRow);
             layout.addView(pictureRow);
             layout.addView(descriptionRow);
+            if (hasQuantity) {
+                layout.addView(quantityRow);
+            }
             layout.addView(addToCartRow);
         }
 
         //add the checkout button
         TableRow checkOutRow = new TableRow(this);
         checkOutRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        checkOutRow.setPadding(0, 100, 0, 0);
         checkOutRow.addView(createCheckOutButton());
         layout.addView(checkOutRow);
 
+    }
+
+    /***
+     * Creates the +/- button and summary for field that has quantity
+     * @param tr table row to be changed
+     * @param p perks object
+     * @param toDisable true if you want to disable the buttons, false if otherwise
+     */
+    private void createQuantityFields(final TableRow tr, final Perks p, boolean toDisable) {
+        int countValue = 0;
+
+        //minus
+        final Button minus = new Button(this);
+        minus.setText("-");
+        minus.setGravity(Gravity.CENTER_HORIZONTAL);
+        minus.setTypeface(null, Typeface.BOLD);
+        tr.addView(minus);
+        TableRow.LayoutParams minusLP = (TableRow.LayoutParams) minus.getLayoutParams();
+        minusLP.width = 0;
+        minusLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        minusLP.weight = 0.1f;
+        minus.setLayoutParams(minusLP);
+        if (p.getQuantity() < 1 || toDisable) {      //disable button if there is already lesser than 1 quantity
+            minus.setEnabled(false);
+        } else {
+            minus.setEnabled(true);
+        }
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                p.setQuantity(p.getQuantity() - 1);
+                double totalPrice = Double.parseDouble(df.format(p.getQuantity() * p.getPricePerUnit()));
+                p.setTotalPrice(totalPrice);
+
+                tr.removeAllViews();            //remove all views from this tablerow then add back again
+                createQuantityFields(tr, p, false);
+            }
+        });
+
+
+        //count
+        TextView count = new TextView(this);
+        count.setText(String.valueOf(p.getQuantity()));
+        count.setTextSize(16);
+        count.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        count.setTextColor(Color.parseColor(BLUE_COLOR));
+        tr.addView(count);
+        TableRow.LayoutParams countLP = (TableRow.LayoutParams) count.getLayoutParams();
+        countLP.width = 0;
+        countLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        countLP.weight = 0.1f;
+        count.setLayoutParams(countLP);
+
+
+        //add
+        final Button add = new Button(this);
+        add.setText("+");
+        add.setGravity(Gravity.CENTER_HORIZONTAL);
+        add.setTypeface(null, Typeface.BOLD);
+        tr.addView(add);
+        TableRow.LayoutParams addLP = (TableRow.LayoutParams) add.getLayoutParams();
+        addLP.width = 0;
+        addLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        addLP.weight = 0.1f;
+        add.setLayoutParams(addLP);
+        if (toDisable) {
+            add.setEnabled(false);
+        } else {
+            add.setEnabled(true);
+        }
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                p.setQuantity(p.getQuantity() + 1);
+                double totalPrice = Double.parseDouble(df.format(p.getQuantity() * p.getPricePerUnit()));
+                p.setTotalPrice(totalPrice);
+
+                tr.removeAllViews();            //remove all views from this tablerow then add back again
+                createQuantityFields(tr, p, false);
+            }
+        });
+
+        //summary
+        TextView summary = new TextView(this);
+        double totalPrice = Double.parseDouble(df.format(p.getQuantity() * p.getPricePerUnit()));
+        p.setTotalPrice(totalPrice);
+
+        summary.setText(String.valueOf(p.getTotalPrice()) + " total credits");
+        summary.setTypeface(null, Typeface.ITALIC);
+        summary.setTextSize(14);
+        summary.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+        tr.addView(summary);
+        TableRow.LayoutParams summaryLP = (TableRow.LayoutParams) summary.getLayoutParams();
+        summaryLP.width = 0;
+        summaryLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        summaryLP.weight = 0.4f;
+        summary.setLayoutParams(summaryLP);
     }
 
     /***
@@ -178,14 +322,21 @@ public class Chooseperks extends Activity {
         return imageView;
     }
 
-    private Button createCartButton(final String name, final Perks p) {
+    /***
+     * Creates the cart button, updates the plus minus button to disabled when it has been added
+     * @param name name of the item that is added
+     * @param p perks
+     * @param quantityRow table row of quantity to be deleted and added back again
+     * @return
+     */
+    private Button createCartButton(final String name, final Perks p, final TableRow quantityRow) {
         final Button btn = new Button(this);
         btn.setGravity(Gravity.CENTER_HORIZONTAL);
-        setProperties(p.isHasAdded(), btn, p, false);
+        setProperties(p.isHasAdded(), btn, p, false, quantityRow);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setProperties(!p.isHasAdded(), btn, p, true); //pass in false, pass in true if otherwise
+                setProperties(!p.isHasAdded(), btn, p, true, quantityRow); //pass in false, pass in true if otherwise
             }
         });
 
@@ -197,19 +348,28 @@ public class Chooseperks extends Activity {
      * @param hasAdded if the items has already been added or not
      * @param btn button object
      * @param p perks object
+     * @param quantityRow used to disable the add/minus buttons
      * @param fromClick true if this is invoked from click, false if otherwise (so that the toast will not show upon UI create)
      */
-    private void setProperties(boolean hasAdded, Button btn, Perks p, boolean fromClick) {
+    private void setProperties(boolean hasAdded, Button btn, Perks p, boolean fromClick, TableRow quantityRow) {
         if (hasAdded) {       //if has added then put remove cart, else is other
-            if(fromClick) {
+            if (fromClick) {
                 Toast.makeText(Chooseperks.this, p.getName() + " added to cart", Toast.LENGTH_LONG).show();
+
+                //disable the minus/add buttons from quantity row
+                quantityRow.removeAllViews();            //remove all views from this tablerow then add back again
+                createQuantityFields(quantityRow, p, true);
             }
             btn.setText("Remove from cart");
             btn.setBackgroundColor(Color.parseColor(GREY_COLOR));
             p.setHasAdded(true);
         } else {        //basically the action of removing the item from the cart
-            if(fromClick) {
+            if (fromClick) {
                 Toast.makeText(Chooseperks.this, p.getName() + " removed from cart", Toast.LENGTH_LONG).show();
+
+                //reenable the add/minus buttons from quantity row,
+                quantityRow.removeAllViews();            //remove all views from this tablerow then add back again
+                createQuantityFields(quantityRow, p, false);
             }
             btn.setBackgroundColor(Color.parseColor(GOLD_COLOR));
             btn.setText("Add to cart");
@@ -235,9 +395,14 @@ public class Chooseperks extends Activity {
                         addedList.add(p);
                     }
                 }
-                Intent i = new Intent(Chooseperks.this, perks_summary.class);
-                i.putExtra("AddedList", (Serializable) addedList);
-                startActivity(i);
+
+                if (addedList.isEmpty()) {      //do not allow continue if there is no perks selected
+                    Toast.makeText(Chooseperks.this, "Please select at least a perk before continuing!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent i = new Intent(Chooseperks.this, perks_summary.class);
+                    i.putExtra("AddedList", (Serializable) addedList);
+                    startActivity(i);
+                }
 
 
             }
@@ -253,15 +418,20 @@ public class Chooseperks extends Activity {
      * @param isHeader true = header, false = description, different is just a slight difference in text size and text color
      * @return textview object
      */
-    private TextView createTextView(String value, boolean isHeader) {
+    private TextView createTextView(String value, boolean isHeader, boolean isCredit) {
         TextView textView = new TextView(this);
         textView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         textView.setText(value);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         if (isHeader) {
             textView.setTextColor(Color.parseColor(GOLD_COLOR));
-            textView.setTypeface(null, Typeface.BOLD);
-            textView.setTextSize(20);
+            if (isCredit) {
+                textView.setTypeface(null, Typeface.ITALIC);
+                textView.setTextSize(14);
+            } else {
+                textView.setTypeface(null, Typeface.BOLD);
+                textView.setTextSize(20);
+            }
         } else {
             textView.setTextColor(Color.parseColor(BLUE_COLOR));
             textView.setTextSize(16);

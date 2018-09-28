@@ -10,12 +10,30 @@ public class Perks implements Serializable {
     private double pricePerUnit;
     private boolean hasAdded;       //checks if the item has been added to the cart or not
     private double totalPrice;
+    private int perksID;
+    private int quantity;       //used to check the quantity used for KrisPay Credit, Cash and KrisFlyer Miles
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public Perks() {
     }
 
+    public int getPerksID() {
+        return perksID;
+    }
 
-    public Perks(String category, String name, String description, double pricePerUnit) {
+    public void setPerksID(int perksID) {
+        this.perksID = perksID;
+    }
+
+    public Perks(int perksID, String category, String name, String description, double pricePerUnit) {
+        this.perksID = perksID;
         this.category = category;
         this.name = name;
         this.description = description;
