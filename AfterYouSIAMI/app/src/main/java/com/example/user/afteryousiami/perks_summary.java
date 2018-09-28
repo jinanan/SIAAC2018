@@ -24,9 +24,7 @@ public class perks_summary extends Activity {
         setContentView(R.layout.activity_perks_summary);
         addedList = (List<Perks>) getIntent().getSerializableExtra("AddedList");
 
-        for (Perks p : addedList) {
-            printDebug(p.getName());
-        }
+        initPerksUI();
 
 
         Button btn = (Button) findViewById(R.id.btn_confirm);
@@ -39,14 +37,18 @@ public class perks_summary extends Activity {
         });
     }
 
-    public void notificationcall() {
+    private void initPerksUI(){
 
+
+    }
+
+    /***
+     * for notification
+     */
+    private void notificationcall() {
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this).setDefaults(NotificationCompat.DEFAULT_ALL).setSmallIcon(R.drawable.logo).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo)).setContentTitle("Notification Call").setContentText("Test");
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notificationBuilder.build());
-
-
     }
 
     private static void printDebug(String message) {

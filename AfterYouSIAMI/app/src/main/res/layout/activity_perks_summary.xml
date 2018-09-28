@@ -19,74 +19,79 @@
         android:textColor="@android:color/black"
         android:textSize="24sp" />
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:scrollbars="none">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
-
-        <TableRow
+        <TableLayout
+            android:id="@+id/tableLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            android:padding="5dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="1dp"
-                android:text="Perks"
-                android:textColor="#FCB130"
-                android:textSize="35sp"
-                android:textStyle="bold" />
-        </TableRow>
+                android:background="#FFFFFF"
+                android:padding="5dp">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            android:padding="5dp">
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:text="Perks"
+                    android:textColor="#FCB130"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/tv_content"
-                android:layout_width="115dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Krisflyer Lounge----------Day Pass"
-                android:textColor="#FCB130"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="380dp"
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:background="#0C4082"
-                android:text="Confirm"
-                android:textAlignment="center"
-                android:textColor="@android:color/white" />
+                android:background="#FFFFFF"
+                android:padding="5dp">
 
-        </TableRow>
+                <TextView
+                    android:id="@+id/a"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Krisflyer Lounge"
+                    android:textColor="#FCB130"
+                    android:textSize="16sp" />
 
-    </TableLayout>
 
+                <TextView
+                    android:id="@+id/b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="price"
+                    android:textColor="#FCB130"
+                    android:textSize="16sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="380dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#0C4082"
+                    android:text="Confirm"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white" />
+
+            </TableRow>
+
+        </TableLayout>
+    </ScrollView>
 </LinearLayout>

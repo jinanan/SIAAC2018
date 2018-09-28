@@ -9,6 +9,7 @@ public class Perks implements Serializable {
     private String description;
     private double pricePerUnit;
     private boolean hasAdded;       //checks if the item has been added to the cart or not
+    private double totalPrice;
 
     public Perks() {
     }
@@ -61,6 +62,13 @@ public class Perks implements Serializable {
         this.pricePerUnit = pricePerUnit;
     }
 
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     @Override
     public String toString() {
