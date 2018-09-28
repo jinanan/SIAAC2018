@@ -2,12 +2,16 @@ package com.example.user.afteryousiami;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Parcelable;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +33,7 @@ import android.widget.Toast;
 import com.example.user.afteryousiami.DAO.DBConnect;
 import com.example.user.afteryousiami.objects.Perks;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +49,7 @@ public class Chooseperks extends Activity {
     private final String WHITE_COLOR = "#ffffff";
     private final String BLUE_COLOR = "#0C4082";
     private final String GOLD_COLOR = "#FCB130";
+    private final String GREY_COLOR = "#d3d3d3";
     private final int HEIGHT = 550;
     private final int WIDTH = 1100;
 
@@ -123,7 +129,7 @@ public class Chooseperks extends Activity {
             headerRow.addView(createTextView(p.getName(), true));
             createImageView(p.getName(), pictureRow);
             descriptionRow.addView(createTextView(p.getDescription(), false));
-            addToCartRow.addView(createCartButton(p.getName()));
+            addToCartRow.addView(createCartButton(p.getName(), p));
 
 
             //add to the layout
@@ -164,32 +170,51 @@ public class Chooseperks extends Activity {
         pictureRow.addView(imageView);
         imageView.getLayoutParams().height = HEIGHT;
         imageView.getLayoutParams().width = WIDTH;
-        imageView.setImageResource(R.drawable.krisflyerlounge);
+        //replaces all of the () - into underscores "_" because android doesnt allow to compile if its not just letter and underscores only
+        String imageString = name.replace(" ", "_").replace("(", "_").replace(")", "_").replace("-", "_").toLowerCase();
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), context.getResources().getIdentifier("drawable/" + imageString, null, context.getPackageName()));
+        Bitmap bMapScaled = Bitmap.createScaledBitmap(bMap, WIDTH, HEIGHT, true);
+        imageView.setImageBitmap(bMapScaled);
         return imageView;
     }
 
-    private Button createCartButton(final String name) {
-        //<Button
-        //                    android:id="@+id/btn_addToCart"
-        //                    android:layout_width="wrap_content"
-        //                    android:layout_height="wrap_content"
-        //                    android:background="@color/gold"
-        //                    android:onClick="addToCart"
-        //                    android:text="Add to Cart"
-        //                    android:textColor="@color/white" />
-
-        Button btn = new Button(this);
-        btn.setBackgroundColor(Color.parseColor(GOLD_COLOR));
-        btn.setText("Add to cart");
+    private Button createCartButton(final String name, final Perks p) {
+        final Button btn = new Button(this);
         btn.setGravity(Gravity.CENTER_HORIZONTAL);
+        setProperties(p.isHasAdded(), btn, p, false);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Chooseperks.this, "clicked on> " + name, Toast.LENGTH_LONG).show();
+                setProperties(!p.isHasAdded(), btn, p, true); //pass in false, pass in true if otherwise
             }
         });
 
         return btn;
+    }
+
+    /***
+     * set the formatting of the buttons
+     * @param hasAdded if the items has already been added or not
+     * @param btn button object
+     * @param p perks object
+     * @param fromClick true if this is invoked from click, false if otherwise (so that the toast will not show upon UI create)
+     */
+    private void setProperties(boolean hasAdded, Button btn, Perks p, boolean fromClick) {
+        if (hasAdded) {       //if has added then put remove cart, else is other
+            if(fromClick) {
+                Toast.makeText(Chooseperks.this, p.getName() + " added to cart", Toast.LENGTH_LONG).show();
+            }
+            btn.setText("Remove from cart");
+            btn.setBackgroundColor(Color.parseColor(GREY_COLOR));
+            p.setHasAdded(true);
+        } else {        //basically the action of removing the item from the cart
+            if(fromClick) {
+                Toast.makeText(Chooseperks.this, p.getName() + " removed from cart", Toast.LENGTH_LONG).show();
+            }
+            btn.setBackgroundColor(Color.parseColor(GOLD_COLOR));
+            btn.setText("Add to cart");
+            p.setHasAdded(false);           //means that it has not been added after its removed
+        }
     }
 
     /***
@@ -204,8 +229,17 @@ public class Chooseperks extends Activity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                List<Perks> addedList = new ArrayList<>();
+                for (Perks p : perksList) {
+                    if (p.isHasAdded()) {
+                        addedList.add(p);
+                    }
+                }
                 Intent i = new Intent(Chooseperks.this, perks_summary.class);
+                i.putExtra("AddedList", (Serializable) addedList);
                 startActivity(i);
+
+
             }
         });
 
@@ -221,18 +255,17 @@ public class Chooseperks extends Activity {
      */
     private TextView createTextView(String value, boolean isHeader) {
         TextView textView = new TextView(this);
-        textView.setLayoutParams(new TableRow.LayoutParams());
+        textView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
         textView.setText(value);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         if (isHeader) {
             textView.setTextColor(Color.parseColor(GOLD_COLOR));
-            textView.setTextSize(18);
+            textView.setTypeface(null, Typeface.BOLD);
+            textView.setTextSize(20);
         } else {
             textView.setTextColor(Color.parseColor(BLUE_COLOR));
             textView.setTextSize(16);
         }
-        textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
-
 
         return textView;
     }

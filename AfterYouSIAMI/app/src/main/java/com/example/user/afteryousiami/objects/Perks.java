@@ -1,11 +1,14 @@
 package com.example.user.afteryousiami.objects;
 
-public class Perks {
+import java.io.Serializable;
+
+public class Perks implements Serializable {
 
     private String category;
     private String name;
     private String description;
     private double pricePerUnit;
+    private boolean hasAdded;       //checks if the item has been added to the cart or not
 
     public Perks() {
     }
@@ -16,6 +19,14 @@ public class Perks {
         this.name = name;
         this.description = description;
         this.pricePerUnit = pricePerUnit;
+    }
+
+    public boolean isHasAdded() {
+        return hasAdded;
+    }
+
+    public void setHasAdded(boolean hasAdded) {
+        this.hasAdded = hasAdded;
     }
 
     public String getCategory() {
