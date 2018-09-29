@@ -3,6 +3,8 @@ package com.example.user.afteryousiami.DAO;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.example.user.afteryousiami.objects.Passenger;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
@@ -29,8 +31,35 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Connection {
+
+    /***
+     * emulates the action of retrieving passenger info from the web server
+     * @param asset asset manager object to be passed in to access the properties file
+     * @return null if there is an error, new pax object when there isnt
+     */
+    public static Passenger getPax(AssetManager asset) {
+        Properties prop = new Properties();              //access the properties file and create the pax object
+        try {
+            prop.load(asset.open("app.properties"));
+            String bookingID = prop.getProperty("user.bookingID");
+            String bookingClass = prop.getProperty("user.bookingClass");
+            String firstName = prop.getProperty("user.firstName");
+            String lastName = prop.getProperty("user.lastName");
+            String checkInStatus = prop.getProperty("user.checkInStatus");
+            String KFTier = prop.getProperty("user.KFTier");
+            int KFNumber = Integer.parseInt(prop.getProperty("user.KFNumber"));
+            String phone = prop.getProperty("user.phone");
+            String email = prop.getProperty("user.email");
+            return new Passenger(firstName, lastName, bookingClass, KFNumber, KFTier, checkInStatus, bookingID, phone, email);
+
+        } catch (IOException e) {
+            printError(e);
+        }
+        return null;
+    }
 
     /***
      * Sends a GET request to the api and returns the json result as a string

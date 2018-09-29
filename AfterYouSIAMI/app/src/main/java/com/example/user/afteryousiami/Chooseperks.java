@@ -30,7 +30,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.afteryousiami.DAO.Connection;
 import com.example.user.afteryousiami.DAO.DBConnect;
+import com.example.user.afteryousiami.objects.Passenger;
 import com.example.user.afteryousiami.objects.Perks;
 
 import java.io.IOException;
@@ -49,6 +51,7 @@ public class Chooseperks extends Activity {
     private TableLayout layout;
     private String[] quantityList;        //used to keep all of the names of the items that needs to have the quantity button
     private DecimalFormat df = new DecimalFormat(".##");
+    private Passenger currPax;
 
     //colors to be used for the textview
     private final String WHITE_COLOR = "#ffffff";
@@ -73,8 +76,10 @@ public class Chooseperks extends Activity {
             prop.load(getAssets().open("app.properties"));
             quantityList = prop.getProperty("quantity_fields").split(",");
         } catch (IOException e) {
-            e.printStackTrace();
+            printError(e);
         }
+
+        currPax = Connection.getPax(getAssets());     //gets the current pax
     }
 
     private void createSpinnerObjects(List<Perks> perksList) {
@@ -122,67 +127,79 @@ public class Chooseperks extends Activity {
         //update the texts or more items where possible
         for (int i = 0; i < selected.size(); i++) {
             Perks p = selected.get(i);
-            TableRow headerRow = new TableRow(this);
-            TableRow pictureRow = new TableRow(this);
-            TableRow descriptionRow = new TableRow(this);
-            TableRow addToCartRow = new TableRow(this);
-            TableRow quantityRow = new TableRow(this);
 
-            //setting layout params
-            headerRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
-            headerRow.setPadding(0, 0, 0, 20);
-            pictureRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            pictureRow.setPadding(0, 0, 0, 20);
-            descriptionRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            descriptionRow.setPadding(0, 0, 0, 20);
-            if (i < selected.size() - 1) {              //as long as i is still lesser than the last element, add the padding, else dont add when its the last
-                addToCartRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                addToCartRow.setPadding(0, 0, 0, 20);
-            }
-
-            //add data from the textviews to the tablerows
-            TextView headerView = createTextView(p.getName(), true, false);
-            headerRow.addView(headerView);      //add header and the credits
-            TableRow.LayoutParams headerViewLP = (TableRow.LayoutParams) headerView.getLayoutParams();
-            headerViewLP.width = 0;
-            headerViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
-            headerViewLP.weight = 0.6f;
-            headerView.setLayoutParams(headerViewLP);
-
-            TextView creditsView = createTextView(String.valueOf(p.getPricePerUnit()) + " Credits per unit", true, true);
-            headerRow.addView(creditsView);
-            TableRow.LayoutParams creditsViewLP = (TableRow.LayoutParams) creditsView.getLayoutParams();
-            creditsViewLP.width = 0;
-            creditsViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
-            creditsViewLP.weight = 0.4f;
-            creditsView.setLayoutParams(creditsViewLP);
-            creditsView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-
-
-            createImageView(p.getName(), pictureRow);
-            descriptionRow.addView(createTextView(p.getDescription(), false, false));
-            addToCartRow.addView(createCartButton(p.getName(), p, quantityRow));
-
-            //loop thru the quantity list and check if need to add quantity stuffs
-            boolean hasQuantity = false;
-            for (String s : quantityList) {
-                if (p.getName().equals(s)) {
-                    quantityRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
-                    quantityRow.setPadding(0, 0, 0, 20);
-                    createQuantityFields(quantityRow, p, false);
-                    hasQuantity = true;
+            // seat upgrades level depends on the current user's class
+            boolean toShow = true;
+            String currBookingClass = currPax.getBookingClass();        //because so far there's only economy or business therefore only have 2 conditions
+            if (currBookingClass.equalsIgnoreCase("business")) {      //then show first class
+                if (p.getName().contains("PE-Biz") || p.getName().contains("E-PE")) {     //dont show premium economy and business
+                    toShow = false;
                 }
             }
 
+            if (toShow) {       //biz and premium economy no need show if the user is alr in business
+                TableRow headerRow = new TableRow(this);
+                TableRow pictureRow = new TableRow(this);
+                TableRow descriptionRow = new TableRow(this);
+                TableRow addToCartRow = new TableRow(this);
+                TableRow quantityRow = new TableRow(this);
 
-            //add to the layout
-            layout.addView(headerRow);
-            layout.addView(pictureRow);
-            layout.addView(descriptionRow);
-            if (hasQuantity) {
-                layout.addView(quantityRow);
+                //setting layout params
+                headerRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+                headerRow.setPadding(0, 0, 0, 20);
+                pictureRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                pictureRow.setPadding(0, 0, 0, 20);
+                descriptionRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                descriptionRow.setPadding(0, 0, 0, 20);
+                if (i < selected.size() - 1) {              //as long as i is still lesser than the last element, add the padding, else dont add when its the last
+                    addToCartRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                    addToCartRow.setPadding(0, 0, 0, 20);
+                }
+
+                //add data from the textviews to the tablerows
+                TextView headerView = createTextView(p.getName(), true, false);
+                headerRow.addView(headerView);      //add header and the credits
+                TableRow.LayoutParams headerViewLP = (TableRow.LayoutParams) headerView.getLayoutParams();
+                headerViewLP.width = 0;
+                headerViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+                headerViewLP.weight = 0.6f;
+                headerView.setLayoutParams(headerViewLP);
+
+                TextView creditsView = createTextView(String.valueOf(p.getPricePerUnit()) + " Credits per unit", true, true);
+                headerRow.addView(creditsView);
+                TableRow.LayoutParams creditsViewLP = (TableRow.LayoutParams) creditsView.getLayoutParams();
+                creditsViewLP.width = 0;
+                creditsViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+                creditsViewLP.weight = 0.4f;
+                creditsView.setLayoutParams(creditsViewLP);
+                creditsView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
+
+                createImageView(p.getName(), pictureRow);
+                descriptionRow.addView(createTextView(p.getDescription(), false, false));
+                addToCartRow.addView(createCartButton(p.getName(), p, quantityRow));
+
+                //loop thru the quantity list and check if need to add quantity stuffs
+                boolean hasQuantity = false;
+                for (String s : quantityList) {
+                    if (p.getName().equals(s)) {
+                        quantityRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+                        quantityRow.setPadding(0, 0, 0, 20);
+                        createQuantityFields(quantityRow, p, false);
+                        hasQuantity = true;
+                    }
+                }
+
+
+                //add to the layout
+                layout.addView(headerRow);
+                layout.addView(pictureRow);
+                layout.addView(descriptionRow);
+                if (hasQuantity) {
+                    layout.addView(quantityRow);
+                }
+                layout.addView(addToCartRow);
             }
-            layout.addView(addToCartRow);
         }
 
         //add the checkout button
@@ -191,7 +208,6 @@ public class Chooseperks extends Activity {
         checkOutRow.setPadding(0, 100, 0, 0);
         checkOutRow.addView(createCheckOutButton());
         layout.addView(checkOutRow);
-
     }
 
     /***
@@ -201,7 +217,9 @@ public class Chooseperks extends Activity {
      * @param toDisable true if you want to disable the buttons, false if otherwise
      */
     private void createQuantityFields(final TableRow tr, final Perks p, boolean toDisable) {
-        int countValue = 0;
+        if (p.getQuantity() == 0) {
+            p.setQuantity(1);       //make it 1 so that its defaulted at 1 when shown to the user
+        }
 
         //minus
         final Button minus = new Button(this);

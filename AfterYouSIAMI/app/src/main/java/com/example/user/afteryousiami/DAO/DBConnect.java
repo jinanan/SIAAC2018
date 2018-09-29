@@ -2,6 +2,7 @@ package com.example.user.afteryousiami.DAO;
 
 import android.util.Log;
 
+import com.example.user.afteryousiami.objects.Passenger;
 import com.example.user.afteryousiami.objects.Perks;
 
 import java.sql.Connection;
@@ -19,7 +20,7 @@ public class DBConnect {
      * @param perksList added perks list
      * @return
      */
-    public boolean insertBid(List<Perks> perksList, int bookingID) {
+    public boolean insertBid(List<Perks> perksList, String bookingID) {
         Connection con = null;
         PreparedStatement pmt = null;
         try {
@@ -30,7 +31,7 @@ public class DBConnect {
                 for (Perks p : perksList) {
                     pmt = con.prepareStatement("insert into bid (bidCatId, bookingId, bidPrice)" + " values (?, ?, ?)");
                     pmt.setInt(1, p.getPerksID());
-                    pmt.setInt(2, bookingID);
+                    pmt.setString(2, bookingID);
                     pmt.setDouble(3, p.getTotalPrice());
                     pmt.executeUpdate();
                 }
@@ -42,6 +43,36 @@ public class DBConnect {
             ConnectionManager.close(con, pmt, null);
         }
         return false;
+    }
+
+    /***
+     * inserts passenger information into the db
+     * @param pax
+     * @return
+     */
+    public boolean insertUser(Passenger pax) {
+        Connection con = null;
+        PreparedStatement pmt = null;
+        try {
+            con = ConnectionManager.getConnection();
+            pmt = null;
+            if (con != null) {
+                pmt = con.prepareStatement("insert into user (firstName, lastName, phone, email, krisflyerNum)" + " values (?, ?, ?, ?, ?)");
+                pmt.setString(1, pax.getFirstname());
+                pmt.setString(2, pax.getLastname());
+                pmt.setString(3, pax.getPhone());
+                pmt.setString(4, pax.getEmail());
+                pmt.setInt(5, pax.getKfNumber());
+                pmt.executeUpdate();
+            }
+            return true;
+        } catch (SQLException e) {
+            printError(e);
+        } finally {
+            ConnectionManager.close(con, pmt, null);
+        }
+        return false;
+
     }
 
     /***

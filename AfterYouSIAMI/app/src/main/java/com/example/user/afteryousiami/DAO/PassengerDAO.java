@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/***
+ * class not being used as we can get the pax info from the web server instead
+ */
 public class PassengerDAO {
 
     private List<Passenger> paxList;
@@ -23,51 +26,51 @@ public class PassengerDAO {
     private AssetManager asset;
 
 
-    public PassengerDAO(String flightNo, Date flightDate, AssetManager asset) {
-        try {
-            this.flightDate = flightDate;
-            this.flightNo = flightNo;
-            this.asset = asset;
-
-            paxList = new ArrayList<>();
-            getPassengerInfo();     //invoke to populate the list
-        } catch (IOException e) {
-            printError(e);
-        }
-    }
+//    public PassengerDAO(String flightNo, Date flightDate, AssetManager asset) {
+//        try {
+//            this.flightDate = flightDate;
+//            this.flightNo = flightNo;
+//            this.asset = asset;
+//
+//            paxList = new ArrayList<>();
+//            getPassengerInfo();     //invoke to populate the list
+//        } catch (IOException e) {
+//            printError(e);
+//        }
+//    }
 
     /***
-     * returns the information of the passenger such as KFnumber, KFtier, last name, first name, booking class
+     * (METHOD NOT USED) returns the information of the passenger such as KFnumber, KFtier, last name, first name, booking class
      * @return list of passengers
      */
-    private void getPassengerInfo() throws IOException {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd");
-            String date = df.format(flightDate);
-
-            //things needed to send as part of request: { "flightNo": "SQ890", "flightDate": "2018-07-20" }
-
-            //post the request and return the json string
-            String result = Connection.getPostResponseFromExternalFile("passenger.json", asset);
-            JSONObject jsonObject = new JSONObject(result);
-            JSONArray array = jsonObject.getJSONObject("response").getJSONArray("passengerList");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject currObj = array.getJSONObject(i);
-                String firstname = currObj.getString("firstName");
-                String lastname = currObj.getString("lastName");
-                String bookingClass = currObj.getString("bookingClass");
-                String kfNumber = currObj.getString("KFNumber");
-                String KFTier = currObj.getString("KFTier");
-                String checkinStatus = currObj.getString("checkInStatus");
-
-                paxList.add(new Passenger(firstname, lastname, bookingClass, kfNumber, KFTier, checkinStatus));
-            }
-            printDebug("offloadpaxCount> " + paxOffLoadCount("123"));       //for debug
-
-        } catch (JSONException e) {
-            printError(e);
-        }
-    }
+//    private void getPassengerInfo() throws IOException {
+//        try {
+//            SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd");
+//            String date = df.format(flightDate);
+//
+//            //things needed to send as part of request: { "flightNo": "SQ890", "flightDate": "2018-07-20" }
+//
+//            //post the request and return the json string
+//            String result = Connection.getPostResponseFromExternalFile("passenger.json", asset);
+//            JSONObject jsonObject = new JSONObject(result);
+//            JSONArray array = jsonObject.getJSONObject("response").getJSONArray("passengerList");
+//            for (int i = 0; i < array.length(); i++) {
+//                JSONObject currObj = array.getJSONObject(i);
+//                String firstname = currObj.getString("firstName");
+//                String lastname = currObj.getString("lastName");
+//                String bookingClass = currObj.getString("bookingClass");
+//                String kfNumber = currObj.getString("KFNumber");
+//                String KFTier = currObj.getString("KFTier");
+//                String checkinStatus = currObj.getString("checkInStatus");
+//
+//                paxList.add(new Passenger(firstname, lastname, bookingClass, kfNumber, KFTier, checkinStatus));
+//            }
+//            printDebug("offloadpaxCount> " + paxOffLoadCount("123"));       //for debug
+//
+//        } catch (JSONException e) {
+//            printError(e);
+//        }
+//    }
 
     /**
      * gets a list of pax to be off loaded based on a matrix and risk calculation

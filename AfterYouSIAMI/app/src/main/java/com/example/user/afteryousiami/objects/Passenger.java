@@ -6,17 +6,55 @@ public class Passenger {
     private String lastname;
     private String bookingClass;        //"ECONOMY", "BUSINESS
     private String flightClass;         //K, H, B
-    private String kfNumber;
+    private int kfNumber;
     private String KFTier;
     private String checkinStatus;
+    private String bookingID;
+    private String email;
+    private String phone;
 
-    public Passenger(String firstname, String lastname, String bookingClass, String kfNumber, String KFTier, String checkinStatus) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getFlightClass() {
+        return flightClass;
+    }
+
+    public void setFlightClass(String flightClass) {
+        this.flightClass = flightClass;
+    }
+
+    public String getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(String bookingID) {
+        this.bookingID = bookingID;
+    }
+
+    public Passenger(String firstname, String lastname, String bookingClass, int kfNumber, String KFTier, String checkinStatus, String bookingID, String phone, String email) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.bookingClass = bookingClass;
+        this.bookingID = bookingID;
         this.kfNumber = kfNumber;
         this.KFTier = KFTier;
         this.checkinStatus = checkinStatus;
+        this.phone = phone;
+        this.email = email;
     }
 
     public String getFirstname() {
@@ -43,11 +81,11 @@ public class Passenger {
         this.bookingClass = bookingClass;
     }
 
-    public String getKfNumber() {
+    public int getKfNumber() {
         return kfNumber;
     }
 
-    public void setKfNumber(String kfNumber) {
+    public void setKfNumber(int kfNumber) {
         this.kfNumber = kfNumber;
     }
 
@@ -67,8 +105,6 @@ public class Passenger {
         this.checkinStatus = checkinStatus;
     }
 
-
-
     @Override
     public String toString() {
         return "Passenger{" +
@@ -76,9 +112,10 @@ public class Passenger {
                 ", lastname='" + lastname + '\'' +
                 ", bookingClass='" + bookingClass + '\'' +
                 ", flightClass='" + flightClass + '\'' +
-                ", kfNumber='" + kfNumber + '\'' +
+                ", kfNumber=" + kfNumber +
                 ", KFTier='" + KFTier + '\'' +
                 ", checkinStatus='" + checkinStatus + '\'' +
+                ", bookingID=" + bookingID +
                 '}';
     }
 }

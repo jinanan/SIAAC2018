@@ -25,9 +25,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.afteryousiami.DAO.Connection;
 import com.example.user.afteryousiami.DAO.DBConnect;
 import com.example.user.afteryousiami.DAO.FlightDAO;
 import com.example.user.afteryousiami.objects.Flight;
+import com.example.user.afteryousiami.objects.Passenger;
 import com.example.user.afteryousiami.objects.Perks;
 
 import org.json.JSONException;
@@ -35,6 +37,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +55,9 @@ public class perks_summary extends Activity {
     private final String GOLD_COLOR = "#FCB130";
     private final String GREY_COLOR = "#d3d3d3";
     private final String BLACK_COLOR = "#BDBDBD";
+    private DecimalFormat df = new DecimalFormat("##.##");
+    private Passenger currPax;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,7 @@ public class perks_summary extends Activity {
         setContentView(R.layout.activity_perks_summary);
         layout = (TableLayout) findViewById(R.id.tableLayout);
         addedList = (List<Perks>) getIntent().getSerializableExtra("AddedList");
+        currPax = Connection.getPax(getAssets());
 
         initPerksUI();
     }
@@ -79,7 +86,7 @@ public class perks_summary extends Activity {
 
     private void initPerksUI() {
         cleanTable();       //invoke cleantable to clear the table before populating it with the new items
-
+        double sumTotal = 0;
 
         for (Perks p : addedList) {
             TableRow contents = new TableRow(this);
@@ -91,8 +98,19 @@ public class perks_summary extends Activity {
             printDivider();
             contents.setPadding(0, 0, 0, 50);
 
+            sumTotal += p.getTotalPrice();
+
             layout.addView(contents);
         }
+
+        //for the total details
+        TableRow totalRow = new TableRow(this);
+        totalRow.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+        totalRow.setBackgroundColor(Color.parseColor(WHITE_COLOR));
+        totalRow.setGravity(Gravity.CENTER_HORIZONTAL);
+        totalRow.setWeightSum(1f);
+        printTotalRow(sumTotal, totalRow);
+        layout.addView(totalRow);
 
 
         //for the final button
@@ -117,12 +135,43 @@ public class perks_summary extends Activity {
             @Override
             public void onClick(View v) {
                 new perks_summary.PerksAsyncTask().execute();
-                notificationcall();
             }
         });
 
         return btn;
 
+    }
+
+    private void printTotalRow(double sumTotal, TableRow tr) {
+        printDivider();
+
+        //for the items selected
+        TextView totalLabel = new TextView(this);
+        tr.addView(totalLabel);
+        TableRow.LayoutParams nameViewLP = (TableRow.LayoutParams) totalLabel.getLayoutParams();
+        nameViewLP.width = 0;
+        nameViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        nameViewLP.weight = 0.5f;
+        totalLabel.setLayoutParams(nameViewLP);
+        totalLabel.setTextSize(20);
+        totalLabel.setText("Total: ");
+        totalLabel.setTextColor(Color.parseColor(BLUE_COLOR));
+        totalLabel.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        //for the items selected
+        TextView sumView = new TextView(this);
+        tr.addView(sumView);
+        TableRow.LayoutParams sumViewLP = (TableRow.LayoutParams) sumView.getLayoutParams();
+        sumViewLP.width = 0;
+        sumViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
+        sumViewLP.weight = 0.5f;
+        sumView.setLayoutParams(sumViewLP);
+        sumView.setTextSize(20);
+        sumView.setText(df.format(sumTotal) + " credits");
+        sumView.setTextColor(Color.parseColor(BLUE_COLOR));
+        sumView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+
+        printDivider();
     }
 
     /***
@@ -137,7 +186,7 @@ public class perks_summary extends Activity {
         TableRow.LayoutParams nameViewLP = (TableRow.LayoutParams) nameView.getLayoutParams();
         nameViewLP.width = 0;
         nameViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
-        nameViewLP.weight = 0.6f;
+        nameViewLP.weight = 0.4f;
         nameView.setGravity(Gravity.CENTER_HORIZONTAL);
         nameView.setLayoutParams(nameViewLP);
         nameView.setTextSize(16);
@@ -150,7 +199,7 @@ public class perks_summary extends Activity {
         TableRow.LayoutParams priceViewLP = (TableRow.LayoutParams) priceView.getLayoutParams();
         priceViewLP.width = 0;
         priceViewLP.height = TableLayout.LayoutParams.WRAP_CONTENT;
-        priceViewLP.weight = 0.3f;
+        priceViewLP.weight = 0.5f;
         priceView.setGravity(Gravity.CENTER_HORIZONTAL);
         priceView.setLayoutParams(priceViewLP);
         priceView.setTextSize(16);
@@ -160,7 +209,7 @@ public class perks_summary extends Activity {
         //for the delete button
         ImageButton btn = new ImageButton(this);
         tr.addView(btn);
-        btn.setImageResource(R.drawable.delete);
+        btn.setImageResource(R.drawable.delete_cross);
         btn.setBackground(null);
         TableRow.LayoutParams btnLP = (TableRow.LayoutParams) btn.getLayoutParams();
         btnLP.weight = 0.1f;
@@ -252,7 +301,7 @@ public class perks_summary extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return db.insertBid(addedList, 0);
+            return db.insertBid(addedList, currPax.getBookingID()) && db.insertUser(currPax);
         }
 
         @Override
@@ -293,6 +342,7 @@ public class perks_summary extends Activity {
                             public void onClick(DialogInterface dialog, int id) {
                                 Toast.makeText(perks_summary.this, "Program complete.", Toast.LENGTH_LONG).show();
                                 perks_summary.this.finish();
+                                notificationcall();     //invoke the notification
                             }
                         });
 

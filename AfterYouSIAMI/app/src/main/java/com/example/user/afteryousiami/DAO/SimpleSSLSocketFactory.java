@@ -45,7 +45,7 @@ public class SimpleSSLSocketFactory extends org.apache.http.conn.ssl.SSLSocketFa
             context.init(null, trustAllCerts, new SecureRandom());
             sslFactory = context.getSocketFactory();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();        //need to change the printout
         }
     }
 
