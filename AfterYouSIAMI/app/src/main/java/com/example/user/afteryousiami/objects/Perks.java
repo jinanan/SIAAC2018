@@ -1,8 +1,10 @@
 package com.example.user.afteryousiami.objects;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class Perks implements Serializable {
+public class Perks implements Serializable, Comparable<Perks> {
 
     private String category;
     private String name;
@@ -96,5 +98,10 @@ public class Perks implements Serializable {
                 ", description='" + description + '\'' +
                 ", pricePerUnit=" + pricePerUnit +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull Perks perks) {
+        return perks.getName().compareTo(this.getName());
     }
 }

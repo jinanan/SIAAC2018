@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -85,6 +86,8 @@ public class Chooseperks extends Activity {
     private void createSpinnerObjects(List<Perks> perksList) {
         this.perksList = perksList;     //set the object to be accessed by the spinenr selected method
         List<String> array = new ArrayList<>();
+        Collections.sort(perksList);
+
         for (Perks p : perksList) {
             String category = p.getCategory();
             if (!array.contains(category)) {

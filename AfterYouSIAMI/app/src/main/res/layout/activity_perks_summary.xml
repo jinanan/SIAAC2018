@@ -9,17 +9,6 @@
     android:orientation="vertical"
     tools:context=".perks_summary">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="0"
-        android:background="@android:color/white"
-        android:text="Perks Summary"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:paddingBottom="50sp"/>
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -33,6 +22,26 @@
             android:layout_height="match_parent"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF">
+
+                <TextView
+                    android:id="@+id/headerTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:paddingBottom="20sp"
+                    android:text="Perks summary"
+                    android:textAlignment="center"
+                    android:textColor="@color/blue"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+
+                    />
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"

@@ -78,7 +78,7 @@ public class perks_summary extends Activity {
 
         int childCount = layout.getChildCount();
 
-        for (int i = childCount - 1; i >= 1; i--) {
+        for (int i = childCount - 1; i >= 2; i--) {
             TableRow row = (TableRow) layout.getChildAt(i);
             layout.removeView(row);
         }
@@ -274,7 +274,7 @@ public class perks_summary extends Activity {
      * invoke for notification
      */
     private void notificationcall() {
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this).setDefaults(NotificationCompat.DEFAULT_ALL).setSmallIcon(R.drawable.logo).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo)).setContentTitle("Notification Call").setContentText("Test");
+        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this).setDefaults(NotificationCompat.DEFAULT_ALL).setSmallIcon(R.drawable.logo).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo)).setContentTitle("AfterYou perks notification").setContentText("Confirm your bids!");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notificationBuilder.build());
     }
